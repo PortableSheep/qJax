@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <script type="text/javascript" src="../jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="mockjax/jquery.xmldom.js"></script>
+    <script type="text/javascript" src="mockjax/json2.js"></script>
+    <script type="text/javascript" src="mockjax/jquery.mockjax.min.js"></script>
+    <script type="text/javascript" src="../jquery.qjax.js"></script>
+    <title>QJax Usage Example</title>
+    <style type="text/css">
+        span#QueueMeter {
+            display: inline-block;
+            background: url('meter.png') -60px 0 no-repeat;
+            height: 35px;
+            width: 12px;
+        }
+        .queue_10 {
+            background-position: -48px 0 !important;
+        }
+        .queue_20 {
+            background-position: -36px 0 !important;
+        }
+        .queue_30 {
+            background-position: -24px 0 !important;
+        }
+        .queue_40 {
+            background-position: -12px 0 !important;
+        }
+        .queue_50 {
+            background-position: 0 0 !important;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $.mockjax({
+                url: 'MockWebService',
+                responseTime: 750,
+                response: function(settings) {
+                    var mockresponses = ['Waffles arent pancakes!', 'Beep Boop', 'Why cant monkies fly?', 'Jimminy Jerooo', 'There is no spoon!', 'I ate the worm!', 'Spider monkey madness.', 'Hash browns are evil!', 'Dont take the red pill.', 'Why cant I buy ham pants?'];
+                    this.responseText = {
+                        msg: mockresponses[Math.floor(Math.random()*mockresponses.length)]
+                    };
+                }
+            });
+            var meter = $('#QueueMeter'), status = $('#status'), btnRequest = $('#QueueRequest'), ajaxResponse = $('#AjaxResponse');
+            //Get a new instance of qjax, passing it in the ajax settings we want for our MOCK web service call.
+            var _qjax = $.qjax({
+                timeout: 1000,
+                ajaxSettings: {
+                    url: 'MockWebService'
+                },
+                onQueueChange: function(length) {
+                    meter.removeClass();
+                    if (length == 1) {
+                        meter.addClass('queue_10');
+                    } else if (length == 2) {
+                        meter.addClass('queue_20');
+                    } else if (length == 3) {
+                        meter.addClass('queue_30');
+                    } else if (length == 4) {
+                        meter.addClass('queue_40');
+                    } else if (length == 5) {
+                        meter.addClass('queue_50');
+                    }
+                    status.text('Queue length: ' + length);
+                    if (length < 5) {
+                        btnRequest.attr('disabled', false);
+                    } else {
+                        btnRequest.attr('disabled', true);
+                    }
+                },
+                onStart: function() {
+                    status.text('Starting')
+                },
+                onStop: function() {
+                    status.text('Idle...');
+                },
+                onError: function() {
+                    alert('ERROR');
+                }
+            });
+            btnRequest.click(function() {
+                _qjax.Queue({
+                    success: function(msg) {
+                        $('<div style="width: 300px; margin: 4px; border: 1px solid #CCC; background-color: #FAF8CC; padding: 2px; display: none;">' + msg.msg + '</div>').appendTo(ajaxResponse).show();
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <p>
+        In this example we queue an ajax call every time the user clicks the button, only allowing 5 items to be queued at a time.<br>
+        The 'OnQueueChange' callback is used to display a meter that indicates the current load.<br><br>
+        Click the button below to request a random string, and watch the load meter. The faster you click, the higher the meter will fill, until the button disables to make you wait for the queue to catch up.
+    </p>
+    <span id="QueueMeter"></span><button id="QueueRequest" title="Make Random Ajax Request">Make Random Ajax Request</button><span id="status">Idle...</span>
+    <div id="AjaxResponse">
+    </div>
+</body>
+</html>

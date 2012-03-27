@@ -1,3 +1,7 @@
+/*!
+ * qJax jQuery plugin v1.1 - http://bitbucket.org/rushtheweb/qjax/
+ * Copyright 2011-2012, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses. Same as jQuery.
+ */
 (function($){
     $.qjax = function(o) {
         var opt = $.extend({
@@ -22,7 +26,7 @@
         };
 
         //Public clear method for aborting the current ajax request, and resetting the queue.
-        this.clear = function() {
+        this.Clear = function() {
             if (_currentReq) {
                 _currentReq.abort();
                 _currentReq = null;
@@ -39,7 +43,7 @@
                 //Pull off the first request.
                 var req = _queue.shift();
                 //If the request has an original complete handler assigned, call it.
-                if (req.complete) {
+                if (req && req.complete) {
                     req.complete.call(req.thisArg||this, request, status);
                 }
                 //Trigger the queue change event, and null out the current request.

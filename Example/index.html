@@ -2,10 +2,10 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <script type="text/javascript" src="../jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="mockjax/jquery.xmldom.js"></script>
     <script type="text/javascript" src="mockjax/json2.js"></script>
-    <script type="text/javascript" src="mockjax/jquery.mockjax.min.js"></script>
+    <script type="text/javascript" src="mockjax/jquery.mockjax.js"></script>
     <script type="text/javascript" src="../jquery.qjax.js"></script>
     <title>QJax Usage Example</title>
     <style type="text/css">
@@ -43,43 +43,46 @@
                     };
                 }
             });
-            var meter = $('#QueueMeter'), status = $('#status'), btnRequest = $('#QueueRequest'), ajaxResponse = $('#AjaxResponse');
-            //Get a new instance of qjax, passing it in the ajax settings we want for our MOCK web service call.
-            var _qjax = $.qjax({
-                timeout: 1000,
-                ajaxSettings: {
-                    url: 'MockWebService'
-                },
-                onQueueChange: function(length) {
-                    meter.removeClass();
-                    if (length == 1) {
-                        meter.addClass('queue_10');
-                    } else if (length == 2) {
-                        meter.addClass('queue_20');
-                    } else if (length == 3) {
-                        meter.addClass('queue_30');
-                    } else if (length == 4) {
-                        meter.addClass('queue_40');
-                    } else if (length == 5) {
-                        meter.addClass('queue_50');
+            var meter = $('#QueueMeter'),
+                status = $('#status'),
+                btnRequest = $('#QueueRequest'),
+                ajaxResponse = $('#AjaxResponse'),
+                //Get a new instance of qjax, passing it in the ajax settings we want for our MOCK web service call.
+                _qjax = $.qjax({
+                    timeout: 1000,
+                    ajaxSettings: {
+                        url: 'MockWebService'
+                    },
+                    onQueueChange: function(length) {
+                        meter.removeClass();
+                        if (length == 1) {
+                            meter.addClass('queue_10');
+                        } else if (length == 2) {
+                            meter.addClass('queue_20');
+                        } else if (length == 3) {
+                            meter.addClass('queue_30');
+                        } else if (length == 4) {
+                            meter.addClass('queue_40');
+                        } else if (length == 5) {
+                            meter.addClass('queue_50');
+                        }
+                        status.text('Queue length: ' + length);
+                        if (length < 5) {
+                            btnRequest.attr('disabled', false);
+                        } else {
+                            btnRequest.attr('disabled', true);
+                        }
+                    },
+                    onStart: function() {
+                        status.text('Starting')
+                    },
+                    onStop: function() {
+                        status.text('Idle...');
+                    },
+                    onError: function() {
+                        console.log('ERROR');
                     }
-                    status.text('Queue length: ' + length);
-                    if (length < 5) {
-                        btnRequest.attr('disabled', false);
-                    } else {
-                        btnRequest.attr('disabled', true);
-                    }
-                },
-                onStart: function() {
-                    status.text('Starting')
-                },
-                onStop: function() {
-                    status.text('Idle...');
-                },
-                onError: function() {
-                    alert('ERROR');
-                }
-            });
+                });
             btnRequest.click(function() {
                 _qjax.Queue({
                     success: function(msg) {

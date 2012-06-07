@@ -1,5 +1,5 @@
 /*!
- * qJax jQuery plugin v1.1 - http://bitbucket.org/rushtheweb/qjax/
+ * qJax jQuery plugin v1.3 - http://portablesheep.github.com/qJax
  * Copyright 2011-2012, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses. Same as jQuery.
  */
 (function($){
@@ -23,53 +23,48 @@
             if (opt.onQueueChange) {
                 opt.onQueueChange.call(_this, _queue.length);
             }
-        };
-
-        //Public clear method for aborting the current ajax request, and resetting the queue.
-        this.Clear = function() {
-            if (_currentReq) {
-                _currentReq.abort();
-                _currentReq = null;
+            if (_queue.length >= 1 && !_currentReq) {
+                _currentReq = _queue.shift();
+                if (_currentReq.options.isCallback) {
+                    _currentReq.options.complete();
+                } else {
+                    $.ajax(_currentReq.options);
+                }
             }
+        };
+        this.Clear = function() {
             _queue = [];
         };
-
-        //Public queue method. Options is a lit obj identical to the $.ajax options object. thisArg is the "this" context you want passed to the complete handler.
-        this.Queue = function(options, thisArg) {
-            //Setup options, and store the original complete event handler for later.
-            var _o = $.extend({}, opt.ajaxSettings, options||{}), origComplete = _o.complete;
-            //Assign our own complete handler.
+        this.Queue = function(obj, thisArg) {
+            var _o = {}, origComplete = null;
+            if (obj instanceof Function) {
+                //If the obj var is a function, set the options to reflect that, and set the origComplete var to the passed function.
+                _o = { isCallback: true };
+                origComplete = obj;
+            } else {
+                //The obj is an object of ajax settings. Extend the options with the instance ones, and store the complete function.
+                _o = $.extend({}, opt.ajaxSettings, obj||{});
+                origComplete = _o.complete;
+            }
+            //Create our own custom complete handler...
             _o.complete = function(request, status) {
-                //Pull off the first request.
-                var req = _queue.shift();
-                //If the request has an original complete handler assigned, call it.
-                if (req && req.complete) {
-                    req.complete.call(req.thisArg||this, request, status);
-                }
-                //Trigger the queue change event, and null out the current request.
-                TriggerQueueChange();
-                _currentReq = null;
-                //Start the next request in line.
-                if (_queue.length >= 1 && !_currentReq) {
-                    _currentReq = $.ajax(_queue[0].options);
+                if (_currentReq) {
+                    if (_currentReq.complete) {
+                        _currentReq.complete.call(_currentReq.thisArg||this, request, status);
+                    }
+                    _currentReq = null;
+                    TriggerQueueChange();
                 }
             };
-            //Add the ajax call to the queue.
-            _queue.push({options: _o, complete: origComplete, thisArg: thisArg});
-            //Trigger the queue change event.
+            //Push the queue object into the queue, and notify the user that the queue length changed.
+            _queue.push({ options: _o, complete: origComplete, thisArg: thisArg});
             TriggerQueueChange();
-            //Kick off the ajax call if it's the first one.
-            if (_queue.length == 1 && !_currentReq) {
-                _currentReq = $.ajax(_queue[0].options);
-            }
         };
-
         //Setup the onError handler event.
         if (opt.onError) {
             //Bind the handler to the documents ajaxError event.
             _document.ajaxError(opt.onError);
         }
-
         //Setup the onStart or timeout events.
         if (opt.onStart || opt.timeout) {
             //Bind the handler to the documents ajaxStart event.
@@ -87,7 +82,6 @@
                 }
             });
         }
-
         //Setup the onStop handler event.
         if (opt.onStop) {
             //Bind the handler to the documents ajaxStop event.

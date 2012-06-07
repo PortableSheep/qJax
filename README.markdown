@@ -1,7 +1,7 @@
-qJax - jQuery Ajax Queuing Plugin
+qJax - jQuery Ajax/Function Queuing Plugin
 ================================
 
-qJax is a jQuery plugin that allows ajax calls to be queued in the sense that they fire and complete in the order added to the queue, but without making them synchrous.
+qJax is a jQuery plugin that allows ajax or function calls to be queued in the sense that they fire and complete in the order added to the queue, but without making them synchrous.
 
 Additionally, events are exposed to let you handle queue limits and other things you might want.
 

@@ -1,5 +1,5 @@
 /*!
- * qJax jQuery plugin v1.3.1 - https://github.com/PortableSheep/qJax
+ * qJax jQuery plugin v1.3.2 - https://github.com/PortableSheep/qJax
  * Copyright 2011-2013, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses.
  */
 (function($){

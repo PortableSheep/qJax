@@ -13,6 +13,8 @@ A small demo can be found in the source itself, and more examples will follow in
 
 Change Log
 ---------------------
+* **1.3.2**
+	* Fixed manifest error.
 * **1.3.1**
 	* Added manifest for plugins.jquery.com
 	* Updated for jQuery 1.9.1, and worked around an example issue with mockjax and the latest jQuery.

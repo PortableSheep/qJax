@@ -1,6 +1,6 @@
 /*!
- * qJax jQuery plugin v1.3 - http://portablesheep.github.com/qJax
- * Copyright 2011-2012, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses. Same as jQuery.
+ * qJax jQuery plugin v1.3.1 - https://github.com/PortableSheep/qJax
+ * Copyright 2011-2013, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses.
  */
 (function($){
     $.qjax = function(o) {

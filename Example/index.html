@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="mockjax/jquery.xmldom.js"></script>
     <script type="text/javascript" src="mockjax/json2.js"></script>
     <script type="text/javascript" src="mockjax/jquery.mockjax.js"></script>
@@ -35,13 +35,7 @@
         $(document).ready(function(){
             $.mockjax({
                 url: 'MockWebService',
-                responseTime: 750,
-                response: function(settings) {
-                    var mockresponses = ['Waffles arent pancakes!', 'Beep Boop', 'Why cant monkies fly?', 'Jimminy Jerooo', 'There is no spoon!', 'I ate the worm!', 'Spider monkey madness.', 'Hash browns are evil!', 'Dont take the red pill.', 'Why cant I buy ham pants?'];
-                    this.responseText = {
-                        msg: mockresponses[Math.floor(Math.random()*mockresponses.length)]
-                    };
-                }
+                responseTime: 750
             });
             var meter = $('#QueueMeter'),
                 status = $('#status'),
@@ -85,8 +79,9 @@
                 });
             btnRequest.click(function() {
                 _qjax.Queue({
-                    success: function(msg) {
-                        $('<div style="width: 300px; margin: 4px; border: 1px solid #CCC; background-color: #FAF8CC; padding: 2px; display: none;">' + msg.msg + '</div>').appendTo(ajaxResponse).show();
+                    success: function() {
+                        var mockresponses = ['Waffles arent pancakes!', 'Beep Boop', 'Why cant monkies fly?', 'Jimminy Jerooo', 'There is no spoon!', 'I ate the worm!', 'Spider monkey madness.', 'Hash browns are evil!', 'Dont take the red pill.', 'Why cant I buy ham pants?'];
+                        $('<div style="width: 300px; margin: 4px; border: 1px solid #CCC; background-color: #FAF8CC; padding: 2px; display: none;">' + mockresponses[Math.floor(Math.random()*mockresponses.length)] + '</div>').appendTo(ajaxResponse).show();
                     }
                 });
             });

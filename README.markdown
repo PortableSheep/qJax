@@ -13,6 +13,9 @@ A small demo can be found in the source itself, and more examples will follow in
 
 Change Log
 ---------------------
+* **1.4.0**
+	* Changed the onStart/onStop/onError events to be aware of only their instance, instead of global ajax calls outside of qjax.
+		* If this is a breaking change for some, just wire up to $.ajaxStart/$.ajaxStop, since it's the same as the existing functionality.
 * **1.3.2**
 	* Fixed manifest error.
 * **1.3.1**

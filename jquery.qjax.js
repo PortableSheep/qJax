@@ -1,14 +1,14 @@
 /*!
- * qJax jQuery plugin v1.3.2 - https://github.com/PortableSheep/qJax
+ * qJax jQuery plugin v1.4.0 - https://github.com/PortableSheep/qJax
  * Copyright 2011-2013, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses.
  */
 (function($){
     $.qjax = function(o) {
         var opt = $.extend({
             timeout: null,
-            onError: null,
             onStart: null,
             onStop: null,
+            onError: null,
             onTimeout: null,
             onQueueChange: null,
             ajaxSettings: {
@@ -18,7 +18,40 @@
                 dataType: 'json',
                 type: 'POST'
             }
-        }, o), _queue = [], _currentReq = null, _timeoutRef = null, _document = $(document), _this = this,
+        }, o), _queue = [], _currentReq = null, _timeoutRef = null, _this = this, _started = false,
+        TriggerStartEvent = function() {
+            if (!_started) {
+                _started = true;
+                //If we have a timeout handler, a timeout interval, and we have at least one thing in the queue...
+                if (opt.onTimeout && opt.timeout && $.isFunction(opt.onTimeout)) {
+                    //Kill the old timeout handle
+                    if (_timeoutRef) {
+                        clearTimeout(_timeoutRef);
+                    }
+                    //Create a new timeout, that calls the event when elapsed.
+                    _timeoutRef = setTimeout($.proxy(function() {
+                        opt.onTimeout.call(this, _currentReq.options);
+                    }, this), opt.timeout);
+                }
+                //If we have an onStart handler, call it.
+                if (opt.onStart && $.isFunction(opt.onStart)) {
+                    opt.onStart(this, _currentReq.options);
+                }
+            }
+        },
+        TriggerStopEvent = function() {
+            //If we've started, and the queue is empty...
+            if (_started && _queue.length <= 0) {
+                _started = false;
+                if (_timeoutRef) {
+                    clearTimeout(_timeoutRef);
+                }
+                //Mark as stopped, and fire the onStop handler if possible.
+                if (opt.onStop && $.isFunction(opt.onStop)) {
+                    opt.onStop(this, _currentReq.options);
+                }
+            }
+        },
         TriggerQueueChange = function() {
             if (opt.onQueueChange) {
                 opt.onQueueChange.call(_this, _queue.length);
@@ -28,6 +61,7 @@
                 if (_currentReq.options.isCallback) {
                     _currentReq.options.complete();
                 } else {
+                    TriggerStartEvent();
                     $.ajax(_currentReq.options);
                 }
             }
@@ -48,10 +82,14 @@
             }
             //Create our own custom complete handler...
             _o.complete = function(request, status) {
+                if (status == 'error' && opt.onError && $.isFunction(opt.onError)) {
+                    opt.onError.call(_currentReq.thisArg||this, request, status);
+                }
                 if (_currentReq) {
                     if (_currentReq.complete) {
                         _currentReq.complete.call(_currentReq.thisArg||this, request, status);
                     }
+                    TriggerStopEvent();
                     _currentReq = null;
                     TriggerQueueChange();
                 }
@@ -60,35 +98,6 @@
             _queue.push({ options: _o, complete: origComplete, thisArg: thisArg});
             TriggerQueueChange();
         };
-        //Setup the onError handler event.
-        if (opt.onError) {
-            //Bind the handler to the documents ajaxError event.
-            _document.ajaxError(opt.onError);
-        }
-        //Setup the onStart or timeout events.
-        if (opt.onStart || opt.timeout) {
-            //Bind the handler to the documents ajaxStart event.
-            _document.ajaxStart(function() {
-                //Only call out event handler if we've got one set.
-                if (opt.onStart) {
-                    opt.onStart.call(_this);
-                }
-                //Only set a timeout if we have a handler for the vent, and if there is at least one thing queued.
-                if (opt.onTimeout && opt.timeout && _queue.length >= 1) {
-                    if (_timeoutRef) {
-                        clearTimeout(_timeoutRef);
-                    }
-                    _timeoutRef = setTimeout(opt.onTimeout, opt.timeout);
-                }
-            });
-        }
-        //Setup the onStop handler event.
-        if (opt.onStop) {
-            //Bind the handler to the documents ajaxStop event.
-            _document.ajaxStop(function() {
-                opt.onStop.call(_this);
-            });
-        }
         return this;
     };
 })(jQuery);

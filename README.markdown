@@ -1,4 +1,9 @@
-qJax - jQuery Ajax/Function Queuing Plugin
+	             __
+	  ____ _    / /___ __  __
+	 / __ `/_  / / __ `/ |/_/
+	/ /_/ / /_/ / /_/ />  <
+	\__, /\____/\__,_/_/|_|
+	  /_/  jQuery Ajax/Function Queuing Plugin
 ================================
 
 qJax is a jQuery plugin that allows ajax or function calls to be queued in the sense that they fire and complete in the order added to the queue, but without making them synchronous.
@@ -13,6 +18,10 @@ A small demo can be found in the source itself, and more examples will follow in
 
 Change Log
 ---------------------
+* **1.5.0**
+	* Changed internal queue object to expose promise methods, and added auto binding of promise events to $.ajax during queue change.
+	* Changed Queue to return queue object, so promise methods can be used for event binding.
+	* Added queueChangeDelay option to control the delay of kicking off the next ajax call, allowing time for promise usage.
 * **1.4.0**
 	* Changed the onStart/onStop/onError events to be aware of only their instance, instead of global ajax calls outside of qjax.
 		* If this is a breaking change for some, just wire up to $.ajaxStart/$.ajaxStop, since it's the same as the existing functionality.

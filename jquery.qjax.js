@@ -1,7 +1,11 @@
-/*!
- * qJax jQuery plugin v1.4.0 - https://github.com/PortableSheep/qJax
- * Copyright 2011-2013, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses.
- */
+/*!           __
+   ____ _    / /___ __  __
+  / __ `/_  / / __ `/ |/_/
+ / /_/ / /_/ / /_/ />  <
+ \__, /\____/\__,_/_/|_|
+   /_/  jQuery plugin v1.5.0 - https://github.com/PortableSheep/qJax
+        Copyright 2011-2013, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses.
+*/
 (function($){
     $.qjax = function(o) {
         var opt = $.extend({
@@ -11,6 +15,7 @@
             onError: null,
             onTimeout: null,
             onQueueChange: null,
+            queueChangeDelay: 0,
             ajaxSettings: {
                 url: '',
                 timeout: 5000,
@@ -19,6 +24,12 @@
                 type: 'POST'
             }
         }, o), _queue = [], _currentReq = null, _timeoutRef = null, _this = this, _started = false,
+        /*      ____      __                        __   ______                 __  _
+               /  _/___  / /____  _________  ____ _/ /  / ____/_  ______  _____/ /_(_)___  ____  _____
+               / // __ \/ __/ _ \/ ___/ __ \/ __ `/ /  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
+             _/ // / / / /_/  __/ /  / / / / /_/ / /  / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
+            /___/_/ /_/\__/\___/_/  /_/ /_/\__,_/_/  /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
+        */
         TriggerStartEvent = function() {
             if (!_started) {
                 _started = true;
@@ -56,16 +67,64 @@
             if (opt.onQueueChange) {
                 opt.onQueueChange.call(_this, _queue.length);
             }
+            //Only start a new request if we have at least one, and another isn't in progress.
             if (_queue.length >= 1 && !_currentReq) {
+                //Pull off the next request.
                 _currentReq = _queue.shift();
                 if (_currentReq.options.isCallback) {
+                    //It's a queued function... just call it.
                     _currentReq.options.complete();
                 } else {
+                    //Create the new ajax request, and assign any promise events.
                     TriggerStartEvent();
-                    $.ajax(_currentReq.options);
+                    var request = $.ajax(_currentReq.options);
+                    for(var i in _currentReq.promise) {
+                        for(var x in _currentReq.promise[i]) {
+                            request[i].call(this, _currentReq.promise[i][x]);
+                        }
+                    }
                 }
             }
         };
+
+        /*     ____                           ____  __      _           __
+              / __ \__  _____  __  _____     / __ \/ /_    (_)__  _____/ /_
+             / / / / / / / _ \/ / / / _ \   / / / / __ \  / / _ \/ ___/ __/
+            / /_/ / /_/ /  __/ /_/ /  __/  / /_/ / /_/ / / /  __/ /__/ /_
+            \___\_\__,_/\___/\__,_/\___/   \____/_.___/_/ /\___/\___/\__/
+                                                     /___/
+        */
+        var QueueObject = function(options, complete, context) {
+            this.options = options;
+            this.complete = complete;
+            this.context = context;
+            this.promise = { done: [], then: [], always: [], fail: [] };
+        };
+        QueueObject.prototype._promise = function(n, h) {
+            if (this.promise[n]) {
+                this.promise[n].push(h);
+            }
+            return this;
+        }
+        QueueObject.prototype.done = function(handler) {
+            return this._promise('done', handler);
+        };
+        QueueObject.prototype.then = function(handler) {
+            return this._promise('then', handler);
+        };
+        QueueObject.prototype.always = function(handler) {
+            return this._promise('always', handler);
+        };
+        QueueObject.prototype.fail = function(handler) {
+            return this._promise('fail', handler);
+        };
+
+        /*      ____        __    ___         ______                 __  _
+               / __ \__  __/ /_  / (_)____   / ____/_  ______  _____/ /_(_)___  ____  _____
+              / /_/ / / / / __ \/ / / ___/  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
+             / ____/ /_/ / /_/ / / / /__   / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
+            /_/    \__,_/_.___/_/_/\___/  /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
+        */
         this.Clear = function() {
             _queue = [];
         };
@@ -83,11 +142,11 @@
             //Create our own custom complete handler...
             _o.complete = function(request, status) {
                 if (status == 'error' && opt.onError && $.isFunction(opt.onError)) {
-                    opt.onError.call(_currentReq.thisArg||this, request, status);
+                    opt.onError.call(_currentReq.context||this, request, status);
                 }
                 if (_currentReq) {
                     if (_currentReq.complete) {
-                        _currentReq.complete.call(_currentReq.thisArg||this, request, status);
+                        _currentReq.complete.call(_currentReq.context||this, request, status);
                     }
                     TriggerStopEvent();
                     _currentReq = null;
@@ -95,8 +154,10 @@
                 }
             };
             //Push the queue object into the queue, and notify the user that the queue length changed.
-            _queue.push({ options: _o, complete: origComplete, thisArg: thisArg});
-            TriggerQueueChange();
+            var obj = new QueueObject(_o, origComplete, thisArg);
+            _queue.push(obj);
+            setTimeout(TriggerQueueChange, opt.queueChangeDelay);
+            return obj;
         };
         return this;
     };

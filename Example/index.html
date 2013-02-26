@@ -78,11 +78,20 @@
                     }
                 });
             btnRequest.click(function() {
-                _qjax.Queue({
+                var ret = _qjax.Queue({
                     success: function() {
                         var mockresponses = ['Waffles arent pancakes!', 'Beep Boop', 'Why cant monkies fly?', 'Jimminy Jerooo', 'There is no spoon!', 'I ate the worm!', 'Spider monkey madness.', 'Hash browns are evil!', 'Dont take the red pill.', 'Why cant I buy ham pants?'];
                         $('<div style="width: 300px; margin: 4px; border: 1px solid #CCC; background-color: #FAF8CC; padding: 2px; display: none;">' + mockresponses[Math.floor(Math.random()*mockresponses.length)] + '</div>').appendTo(ajaxResponse).show();
                     }
+                });
+                ret.done(function() {
+                    console.log(arguments);
+                }).then(function() {
+                    console.log(arguments);
+                }).fail(function() {
+                    console.log(arguments);
+                }).always(function() {
+                    console.log(arguments);
                 });
             });
         });

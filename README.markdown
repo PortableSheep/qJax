@@ -18,6 +18,8 @@ A small demo can be found in the source itself, and more examples will follow in
 
 Change Log
 ---------------------
+* **1.5.1**
+	* Changed default $.ajax settings to their proper defaults.
 * **1.5.0**
 	* Changed internal queue object to expose promise methods, and added auto binding of promise events to $.ajax during queue change.
 	* Changed Queue to return queue object, so promise methods can be used for event binding.

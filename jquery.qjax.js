@@ -3,7 +3,7 @@
   / __ `/_  / / __ `/ |/_/
  / /_/ / /_/ / /_/ />  <
  \__, /\____/\__,_/_/|_|
-   /_/  jQuery plugin v1.5.0 - https://github.com/PortableSheep/qJax
+   /_/  jQuery plugin v1.5.1 - https://github.com/PortableSheep/qJax
         Copyright 2011-2013, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses.
 */
 (function($){
@@ -17,11 +17,8 @@
             onQueueChange: null,
             queueChangeDelay: 0,
             ajaxSettings: {
-                url: '',
-                timeout: 5000,
-                contentType: 'application/json; charset=utf-8',
-                dataType: 'json',
-                type: 'POST'
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                type: 'GET'
             }
         }, o), _queue = [], _currentReq = null, _timeoutRef = null, _this = this, _started = false,
         /*      ____      __                        __   ______                 __  _

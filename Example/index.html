@@ -42,7 +42,7 @@
                 btnRequest = $('#QueueRequest'),
                 ajaxResponse = $('#AjaxResponse'),
                 //Get a new instance of qjax, passing it in the ajax settings we want for our MOCK web service call.
-                _qjax = $.qjax({
+                _qjax = new $.qjax({
                     timeout: 10000,
                     ajaxSettings: {
                         url: 'MockWebService'
@@ -68,21 +68,50 @@
                         }
                     },
                     onStart: function(request) {
+                        console.log('1 START');
                         status.text('Starting')
                     },
                     onStop: function(request) {
+                        console.log('1 STOP');
                         status.text('Idle...');
                     },
                     onError: function(request) {
+                        console.log('1 ERROR');
                         console.log('ERROR');
                     }
                 });
+            var temp = new $.qjax({
+                timeout: 9000,
+                ajaxSettings: {
+                    url: 'MockWebService'
+                },
+                onQueueChange: function(len) {
+                    console.log('2 -> ' + len);
+                },
+                onStart: function(req) {
+                    console.log('2 START');
+                },
+                onStop: function(req) {
+                    console.log('2 STOP');
+                },
+                onError: function(req) {
+                    console.log('2 ERROR');
+                }
+            });
             btnRequest.click(function() {
                 var ret = _qjax.Queue({
-                    success: function() {
+                    success: function(e) {
                         var mockresponses = ['Waffles arent pancakes!', 'Beep Boop', 'Why cant monkies fly?', 'Jimminy Jerooo', 'There is no spoon!', 'I ate the worm!', 'Spider monkey madness.', 'Hash browns are evil!', 'Dont take the red pill.', 'Why cant I buy ham pants?'];
                         $('<div style="width: 300px; margin: 4px; border: 1px solid #CCC; background-color: #FAF8CC; padding: 2px; display: none;">' + mockresponses[Math.floor(Math.random()*mockresponses.length)] + '</div>').appendTo(ajaxResponse).show();
                     }
+                });
+                var ret2 = temp.Queue({
+                    success: function(e) {
+                        console.log('2 SUCCESS');
+                    }
+                });
+                ret2.done(function() {
+                    console.log('2 DONE');
                 });
                 ret.done(function() {
                     console.log(arguments);

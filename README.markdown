@@ -18,6 +18,8 @@ A small demo can be found in the source itself, and more examples will follow in
 
 Change Log
 ---------------------
+* **1.5.2**
+	* Added config for bower.
 * **1.5.1**
 	* Changed default $.ajax settings to their proper defaults.
 * **1.5.0**

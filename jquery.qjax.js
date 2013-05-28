@@ -3,7 +3,7 @@
   / __ `/_  / / __ `/ |/_/
  / /_/ / /_/ / /_/ />  <
  \__, /\____/\__,_/_/|_|
-   /_/  jQuery plugin v1.5.1 - https://github.com/PortableSheep/qJax
+   /_/  jQuery plugin v1.5.2 - https://github.com/PortableSheep/qJax
         Copyright 2011-2013, Michael Gunderson - Dual licensed under the MIT or GPL Version 2 licenses.
 */
 (function($){

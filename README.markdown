@@ -39,3 +39,6 @@ Change Log
     * Added support for queuing functions in addition to ajax calls.
 * **1.2.0**
     * Changed the plugin to be instanced, instead of a global call similar to $.ajax.
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/PortableSheep/qjax/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

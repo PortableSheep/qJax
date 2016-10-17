@@ -1,0 +1,43 @@
+{
+	"name": "qjax",
+	"title": "qjax - jQuery Ajax Queuing Plugin",
+	"description": "jQuery Ajax/Function Queuing Plugin",
+	"keywords": [
+		"ajax",
+		"queue",
+		"async",
+		"sync",
+		"asyncronous",
+		"ecosystem:jquery"
+	],
+	"version": "1.5.2",
+	"author": {
+		"name": "Michael Gunderson",
+		"url": "https://github.com/PortableSheep"
+	},
+	"maintainers": [
+		{
+			"name": "Michael Gunderson",
+			"email": "michael@portablesheep.com",
+			"url": "https://github.com/PortableSheep"
+		}
+	],
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://raw.github.com/PortableSheep/qjax/master/MIT-LICENSE.txt"
+		},
+		{
+			"type": "GPLv2",
+			"url": "https://raw.github.com/PortableSheep/qjax/master/GPL-LICENSE.txt"
+		}
+	],
+	"bugs": {
+		"url": "https://github.com/PortableSheep/qjax/issues",
+		"email": "support@portablesheep.com"
+	},
+	"repository": "https://github.com/PortableSheep/qjax",
+	"dependencies": {
+		"jquery": ">=1.8"
+	}
+}

@@ -9,7 +9,7 @@
 
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, defer, EMPTY, throwError } from 'rxjs';
-import { concatMap, finalize, tap, catchError } from 'rxjs/operators';
+import { concatMap, finalize, tap, catchError, map } from 'rxjs/operators';
 
 export interface QJaxConfig {
   /** Maximum number of pending requests allowed in queue. If exceeded, new requests will be rejected. */
@@ -64,7 +64,7 @@ interface QueueItem<T> {
 })
 export class QJaxService {
   private config: QJaxConfig;
-  private queue: QueueItem<any>[] = [];
+  private requestQueue: QueueItem<any>[] = [];
   private queueSubject = new Subject<QueueItem<any>>();
   private queueLengthSubject = new BehaviorSubject<number>(0);
   private isProcessing = false;
@@ -99,7 +99,7 @@ export class QJaxService {
 
     // Setup progress observable
     this.progress$ = this.queueLength$.pipe(
-      tap(length => {
+      map(length => {
         // Calculate progress based on items processed
         const total = length + (this.isProcessing ? 1 : 0);
         const current = total - length;
@@ -126,7 +126,7 @@ export class QJaxService {
   public queue<T>(requestFn: () => Observable<T>): Observable<T> {
     // Check if we've hit the max pending requests limit
     if (this.config.maxPendingRequests !== undefined && 
-        this.queue.length >= this.config.maxPendingRequests) {
+        this.requestQueue.length >= this.config.maxPendingRequests) {
       return throwError(() => new Error(
         `Queue limit reached. Maximum ${this.config.maxPendingRequests} pending requests allowed. ` +
         `Please wait for the queue to reduce before adding more requests.`
@@ -139,7 +139,7 @@ export class QJaxService {
       subject
     };
 
-    this.queue.push(queueItem);
+    this.requestQueue.push(queueItem);
     this.updateQueueLength();
     this.queueSubject.next(queueItem);
 
@@ -164,10 +164,10 @@ export class QJaxService {
    */
   public clear(): void {
     // Complete all pending subjects
-    this.queue.forEach(item => {
+    this.requestQueue.forEach(item => {
       item.subject.complete();
     });
-    this.queue = [];
+    this.requestQueue = [];
     this.updateQueueLength();
   }
 
@@ -175,7 +175,7 @@ export class QJaxService {
    * Get the current queue length
    */
   public getQueueLength(): number {
-    return this.queue.length;
+    return this.requestQueue.length;
   }
 
   /**
@@ -199,14 +199,14 @@ export class QJaxService {
     if (this.config.maxPendingRequests === undefined) {
       return true;
     }
-    return this.queue.length < this.config.maxPendingRequests;
+    return this.requestQueue.length < this.config.maxPendingRequests;
   }
 
   private processQueueItem<T>(item: QueueItem<T>): Observable<T> {
     // Remove from queue as we start processing
-    const index = this.queue.indexOf(item);
+    const index = this.requestQueue.indexOf(item);
     if (index > -1) {
-      this.queue.splice(index, 1);
+      this.requestQueue.splice(index, 1);
       this.updateQueueLength();
     }
 
@@ -245,7 +245,7 @@ export class QJaxService {
         this.currentRequest = null;
         
         // Check if queue is now empty
-        if (this.queue.length === 0) {
+        if (this.requestQueue.length === 0) {
           this.isProcessing = false;
           if (this.config.onStop) {
             this.config.onStop();
@@ -256,7 +256,7 @@ export class QJaxService {
   }
 
   private updateQueueLength(): void {
-    const length = this.queue.length;
+    const length = this.requestQueue.length;
     this.queueLengthSubject.next(length);
     
     if (this.config.onQueueChange) {

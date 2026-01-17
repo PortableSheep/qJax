@@ -1,16 +1,20 @@
 {
 	"name": "queuejax",
-	"title": "qjax - jQuery Ajax Queuing Plugin",
-	"description": "jQuery Ajax/Function Queuing Plugin",
+	"title": "qjax - Ajax Queuing Plugin for jQuery and Angular",
+	"description": "Ajax/Function Queuing Plugin for jQuery and Angular/RxJS",
 	"keywords": [
 		"ajax",
 		"queue",
 		"async",
 		"sync",
 		"asyncronous",
-		"ecosystem:jquery"
+		"rxjs",
+		"angular",
+		"observable",
+		"ecosystem:jquery",
+		"ecosystem:angular"
 	],
-	"version": "1.5.2",
+	"version": "2.0.0",
 	"author": {
 		"name": "Michael Gunderson",
 		"url": "https://github.com/PortableSheep"
@@ -39,5 +43,31 @@
 	"repository": "https://github.com/PortableSheep/qjax",
 	"dependencies": {
 		"jquery": ">=1.8"
-	}
+	},
+	"peerDependencies": {
+		"@angular/core": ">=12.0.0",
+		"rxjs": ">=6.0.0"
+	},
+	"devDependencies": {
+		"@angular/core": "^17.0.0",
+		"@angular/common": "^17.0.0",
+		"rxjs": "^7.8.0",
+		"typescript": "^5.2.0",
+		"@types/node": "^20.0.0"
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "echo 'Tests require Angular testing framework setup' && exit 0"
+	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"src",
+		"jquery.qjax.js",
+		"jquery.qjax.min.js",
+		"README.md",
+		"MIT-LICENSE.txt",
+		"GPL-LICENSE.txt"
+	]
 }

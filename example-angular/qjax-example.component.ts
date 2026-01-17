@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { QJaxService } from '../src/qjax.service';
-import { Subscription, Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Subscription, Observable, timer } from 'rxjs';
+import { delay, take } from 'rxjs/operators';
 
 /**
  * Example Angular component demonstrating QJaxService usage
@@ -246,10 +246,12 @@ export class QJaxExampleComponent implements OnInit, OnDestroy {
 
   makeMultipleRequests(): void {
     // Fire off 20 requests - they will queue and execute in order
-    for (let i = 0; i < 20; i++) {
-      // Small delay to show queueing effect
-      setTimeout(() => this.makeRequest(), i * 50);
-    }
+    // Using RxJS timer for proper subscription management
+    const sub = timer(0, 50).pipe(take(20)).subscribe((i) => {
+      this.makeRequest();
+    });
+    
+    this.subscriptions.push(sub);
   }
 
   clearQueue(): void {

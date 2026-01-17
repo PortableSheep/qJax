@@ -57,7 +57,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"test": "echo 'Tests require Angular testing framework setup' && exit 0"
+		"test": "echo 'Warning: Tests require Angular testing framework setup. Run demo.js for functional testing.' && exit 1"
 	},
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

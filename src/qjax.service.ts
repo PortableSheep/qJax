@@ -224,12 +224,6 @@ export class QJaxService {
         next: (value) => {
           item.subject.next(value);
         },
-        error: (error) => {
-          if (this.config.onError) {
-            this.config.onError(error);
-          }
-          item.subject.error(error);
-        },
         complete: () => {
           item.subject.complete();
         }

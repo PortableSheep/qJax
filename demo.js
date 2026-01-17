@@ -2,7 +2,20 @@
 /**
  * Simple test runner for QJaxService
  * This demonstrates the core functionality without requiring a full Angular app
+ * 
+ * NOTE: This demo requires that TypeScript has been compiled first.
+ * Run `npm run build` before executing this demo.
  */
+
+// Check if dist directory exists
+const fs = require('fs');
+const path = require('path');
+
+const distPath = path.join(__dirname, 'dist');
+if (!fs.existsSync(distPath)) {
+  console.error('ERROR: dist directory not found. Please run `npm run build` first.');
+  process.exit(1);
+}
 
 // Mock minimal Angular Injectable decorator for standalone testing
 global.Injectable = function() {

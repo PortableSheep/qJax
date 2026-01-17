@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { QJaxService } from '../src/qjax.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 /**
@@ -54,8 +54,7 @@ import { delay } from 'rxjs/operators';
         <h3>Responses (in order):</h3>
         <div 
           *ngFor="let response of responses; let i = index" 
-          class="response-item"
-          [@fadeIn]>
+          class="response-item">
           <strong>{{ i + 1 }}.</strong> {{ response }}
         </div>
       </div>

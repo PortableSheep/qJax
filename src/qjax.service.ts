@@ -14,7 +14,7 @@ import { concatMap, finalize, tap, catchError, map } from 'rxjs/operators';
 export interface QJaxConfig {
   /** Maximum number of pending requests allowed in queue. If exceeded, new requests will be rejected. */
   maxPendingRequests?: number;
-  /** Timeout in milliseconds for individual requests */
+  /** Timeout in milliseconds for individual requests (not yet implemented) */
   timeout?: number;
   /** Callback when queue starts processing (first item) */
   onStart?: () => void;
@@ -22,7 +22,7 @@ export interface QJaxConfig {
   onStop?: () => void;
   /** Callback when an error occurs */
   onError?: (error: any) => void;
-  /** Callback when a timeout occurs */
+  /** Callback when a timeout occurs (not yet implemented) */
   onTimeout?: () => void;
   /** Callback when queue length changes */
   onQueueChange?: (queueLength: number) => void;

@@ -69,6 +69,15 @@ For jQuery usage, include the script:
 
 ## 🎯 Live Examples
 
+### 🌐 Standalone Browser Demo (Easiest - No Setup!)
+**Just open in your browser - no installation needed:**
+
+```bash
+open demo-standalone.html
+```
+
+This demo uses RxJS from CDN and demonstrates all QJax features in a single HTML file.
+
 ### Angular/RxJS Example (v2.0)
 A complete, runnable Angular application demonstrating QJaxService:
 
@@ -77,6 +86,8 @@ cd angular-example
 npm install
 npm start
 ```
+
+**Note:** Requires Node.js and Angular CLI. May take a few minutes to install dependencies.
 
 **[View Angular Example →](./angular-example/)**
 

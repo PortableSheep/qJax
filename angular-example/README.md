@@ -2,6 +2,15 @@
 
 This is a complete, runnable Angular application demonstrating the QJaxService in action.
 
+## ⚠️ Setup Requirements
+
+**This example requires:**
+- Node.js 18+ and npm
+- Angular CLI installation (~5-10 minutes for first-time setup)
+- Building the parent QJax library
+
+**For a simpler demo without any setup, use `demo-standalone.html` in the root directory instead!**
+
 ## 🚀 Features Demonstrated
 
 - **Ordered Async Execution**: Fire 20+ async requests that respond in the exact order queued
@@ -14,6 +23,7 @@ This is a complete, runnable Angular application demonstrating the QJaxService i
 
 - Node.js 18+ and npm
 - Angular CLI (will be installed as dev dependency)
+- **Time**: First install may take 5-10 minutes
 
 ## 🏃 Quick Start
 
@@ -23,6 +33,8 @@ This is a complete, runnable Angular application demonstrating the QJaxService i
 cd angular-example
 npm install
 ```
+
+**Note:** This will install Angular CLI and all dependencies (~200MB). First install may take several minutes.
 
 ### 2. Build the QJax Library
 

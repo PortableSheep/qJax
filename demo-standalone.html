@@ -446,7 +446,8 @@
                 meterText.textContent = length > 0 ? `${length}/${maxPending}` : '';
                 queueLengthEl.textContent = `${length} / ${maxPending}`;
                 
-                const canAccept = qjax.canAcceptRequests();
+                // Calculate canAccept based on length and maxPending
+                const canAccept = length < maxPending;
                 canAcceptEl.textContent = canAccept ? 'Yes ✓' : 'No (Queue Full)';
                 canAcceptEl.className = canAccept ? 'value yes' : 'value no';
                 

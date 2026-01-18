@@ -1,0 +1,29 @@
+{
+  "name": "qjax-angular-example",
+  "version": "2.0.0",
+  "description": "QJax Angular/RxJS Example Application",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --open",
+    "build": "ng build",
+    "serve": "ng serve"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^19.0.0",
+    "@angular/common": "^19.2.18",
+    "@angular/compiler": "^19.0.0",
+    "@angular/core": "^19.2.18",
+    "@angular/platform-browser": "^19.0.0",
+    "@angular/platform-browser-dynamic": "^19.0.0",
+    "rxjs": "^7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "^0.15.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^19.0.0",
+    "@angular/cli": "^19.0.0",
+    "@angular/compiler-cli": "^19.0.0",
+    "typescript": "~5.6.0"
+  }
+}

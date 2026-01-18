@@ -7,3 +7,6 @@ dist/
 *~
 .vscode/
 .idea/
+angular-example/node_modules/
+angular-example/dist/
+angular-example/.angular/

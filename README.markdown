@@ -67,6 +67,29 @@ For jQuery usage, include the script:
 <script src="jquery.qjax.js"></script>
 ```
 
+## 🎯 Live Examples
+
+### Angular/RxJS Example (v2.0)
+A complete, runnable Angular application demonstrating QJaxService:
+
+```bash
+cd angular-example
+npm install
+npm start
+```
+
+**[View Angular Example →](./angular-example/)**
+
+### jQuery Example (v1.x)
+Classic jQuery example - just open in your browser:
+
+```bash
+cd jquery-example
+open index.html
+```
+
+**[View jQuery Example →](./jquery-example/)**
+
 - - -
 
 Change Log

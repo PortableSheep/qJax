@@ -458,7 +458,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   makeRequest(): void {
-    const requestId = this.responses.length + 1;
     const mockResponses = [
       'Waffles aren\'t pancakes!',
       'Beep Boop',
@@ -477,13 +476,14 @@ export class AppComponent implements OnInit, OnDestroy {
       'Would you kindly?'
     ];
 
-    // Simulate an HTTP request with delay
+    // Try to queue the request first - only assign ID if successful
     const request$ = this.qjaxService.queue(() => 
       // Simulate HTTP call with delay
       new Observable(observer => {
         setTimeout(() => {
           const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
-          observer.next({ id: requestId, message: randomResponse });
+          // Calculate ID at execution time based on current responses length
+          observer.next({ id: this.responses.length + 1, message: randomResponse });
           observer.complete();
         }, 750); // Simulate network delay
       })

@@ -461,19 +461,20 @@
         });
 
         function makeRequest() {
-            responseCount++;
-            const requestId = responseCount;
-            
+            // Try to queue the request first, only increment counter if successful
             qjax.queueRequest(() => 
                 new rxjs.Observable(observer => {
                     setTimeout(() => {
                         const response = mockResponses[Math.floor(Math.random() * mockResponses.length)];
-                        observer.next({ id: requestId, message: response });
+                        observer.next({ id: responseCount + 1, message: response });
                         observer.complete();
                     }, 750);
                 })
             ).subscribe({
                 next: (data) => {
+                    // Only increment counter when request is successfully processed
+                    responseCount++;
+                    
                     const responsesEl = document.getElementById('responses');
                     const emptyState = responsesEl.querySelector('.empty-state');
                     if (emptyState) {

@@ -494,9 +494,8 @@ export class AppComponent implements OnInit, OnDestroy {
         this.responses.push(`Request ${data.id}: ${data.message}`);
       },
       error: (error) => {
-        if (error.message.includes('Queue limit reached')) {
-          alert(error.message);
-        }
+        // Silently ignore queue limit errors - UI already shows queue status
+        console.log('Request rejected:', error.message);
       }
     });
     

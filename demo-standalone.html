@@ -490,9 +490,8 @@
                     responsesEl.scrollTop = responsesEl.scrollHeight;
                 },
                 error: (error) => {
-                    if (error.message.includes('Queue limit')) {
-                        alert(error.message);
-                    }
+                    // Silently ignore queue limit errors - UI already shows queue status
+                    console.log('Request rejected:', error.message);
                 }
             });
         }

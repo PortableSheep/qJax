@@ -3,8 +3,46 @@
 	 / __ `/_  / / __ `/ |/_/
 	/ /_/ / /_/ / /_/ />  <
 	\__, /\____/\__,_/_/|_|
-	  /_/  jQuery Ajax/Function Queuing Plugin
+	  /_/  Ajax/Function Queuing for jQuery and Angular
 ================================
+
+qJax is an ajax/function queuing library that allows async calls to be queued so they fire and complete in the order added to the queue, but without making them synchronous.
+
+**Now available for both jQuery and Angular/RxJS!**
+
+## Versions
+
+### **v2.0 - Angular/RxJS Support** 🎉 NEW!
+
+A modern Angular/RxJS implementation with full TypeScript support. Features include:
+
+- ✓ Queue async HTTP requests that respond in order (like sync)
+- ✓ Max pending requests limit with user cooldown
+- ✓ Progress events via RxJS Observables
+- ✓ Full TypeScript support
+- ✓ Compatible with Angular HttpClient
+
+**[Read the Angular/RxJS Documentation →](./ANGULAR-README.md)**
+
+**Quick Example:**
+```typescript
+import { QJaxService } from 'queuejax';
+
+const qjax = new QJaxService({
+  maxPendingRequests: 5,
+  onQueueChange: (length) => console.log('Queue:', length)
+});
+
+// Fire off 20 requests - they execute in order!
+for (let i = 0; i < 20; i++) {
+  qjax.queue(() => this.http.get(`/api/data/${i}`))
+    .subscribe(data => console.log(`Response ${i}:`, data));
+}
+```
+
+### **v1.x - jQuery Plugin**
+
+The original jQuery plugin implementation continues to be available and maintained.
 
 qJax is a jQuery plugin that allows ajax or function calls to be queued in the sense that they fire and complete in the order added to the queue, but without making them synchronous.
 
@@ -16,8 +54,65 @@ A small demo can be found in the source itself, and more examples will follow in
 
 - - -
 
+## Installation
+
+```bash
+npm install queuejax
+```
+
+For Angular projects, see [Angular/RxJS Documentation](./ANGULAR-README.md).
+
+For jQuery usage, include the script:
+```html
+<script src="jquery.qjax.js"></script>
+```
+
+## 🎯 Live Examples
+
+### 🌐 Standalone Browser Demo (Easiest - No Setup!)
+**Just open in your browser - no installation needed:**
+
+```bash
+open demo-standalone.html
+```
+
+This demo uses RxJS from CDN and demonstrates all QJax features in a single HTML file.
+
+### Angular/RxJS Example (v2.0)
+A complete, runnable Angular application demonstrating QJaxService:
+
+```bash
+cd angular-example
+npm install
+npm start
+```
+
+**Note:** Requires Node.js and Angular CLI. May take a few minutes to install dependencies.
+
+**[View Angular Example →](./angular-example/)**
+
+### jQuery Example (v1.x)
+Classic jQuery example - just open in your browser:
+
+```bash
+cd jquery-example
+open index.html
+```
+
+**[View jQuery Example →](./jquery-example/)**
+
+- - -
+
 Change Log
 ---------------------
+* **2.0.0**
+	* Added full Angular/RxJS support with TypeScript
+	* New QJaxService for Angular applications
+	* Built-in max pending requests limit
+	* Progress observables for queue monitoring
+	* RxJS-based implementation with Observable support
+	* Maintains ordered async execution
+	* Example Angular component included
 * **1.5.2**
 	* Added config for bower.
 * **1.5.1**

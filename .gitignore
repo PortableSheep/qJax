@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+angular-example/node_modules/
+angular-example/dist/
+angular-example/.angular/

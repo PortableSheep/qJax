@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QJax 2.0 - Standalone Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .meter-container {
+            width: 100%;
+            height: 40px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .meter {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #48bb78, #ecc94b, #f56565);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .meter-text {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .status-item {
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .status-item label {
+            display: block;
+            font-size: 0.875rem;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+
+        .status-item .value {
+            font-size: 1.25rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .value.processing {
+            color: #667eea;
+        }
+
+        .value.yes {
+            color: #48bb78;
+        }
+
+        .value.no {
+            color: #f56565;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .responses-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f7fafc;
+        }
+
+        .response-item {
+            padding: 12px 16px;
+            margin: 8px 0;
+            background: #fff8e1;
+            border: 1px solid #ffd54f;
+            border-radius: 6px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .response-number {
+            display: inline-block;
+            background: #ffa726;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+            font-style: italic;
+        }
+
+        .help-text {
+            color: #f56565;
+            padding: 12px;
+            background: #fff5f5;
+            border-radius: 6px;
+            border-left: 4px solid #f56565;
+            margin: 10px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 QJax 2.0 Demo</h1>
+            <p class="subtitle">Standalone Browser Demo - No Build Required</p>
+        </header>
+
+        <div class="content">
+            <div class="section">
+                <h2>📊 Queue Status</h2>
+                <div class="meter-container">
+                    <div class="meter" id="queueMeter">
+                        <span class="meter-text" id="meterText"></span>
+                    </div>
+                </div>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <label>Queue Length:</label>
+                        <span class="value" id="queueLength">0 / 5</span>
+                    </div>
+                    <div class="status-item">
+                        <label>Status:</label>
+                        <span class="value" id="status">Idle</span>
+                    </div>
+                    <div class="status-item">
+                        <label>Can Accept:</label>
+                        <span class="value yes" id="canAccept">Yes ✓</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎮 Controls</h2>
+                <div class="button-group">
+                    <button class="btn-primary" id="btnSingle">
+                        ➕ Make Single Request
+                    </button>
+                    <button class="btn-secondary" id="btnMultiple">
+                        🔥 Fire 20 Requests
+                    </button>
+                    <button class="btn-danger" id="btnClear">
+                        🗑️ Clear Queue
+                    </button>
+                </div>
+                <div id="helpText" style="display: none;" class="help-text">
+                    ⚠️ Queue is full. Wait for requests to complete before adding more.
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📥 Responses (in order)</h2>
+                <div class="responses-container" id="responses">
+                    <div class="empty-state">
+                        Click "Make Single Request" to see ordered responses
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>QJax 2.0 - Ordered Async Queue with Rate Limiting</p>
+            <p style="margin-top: 10px; font-size: 0.875rem;">
+                This demo uses a simplified, inline version of QJaxService.<br>
+                For full TypeScript/Angular version, see the main library.
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/rxjs@7.8.1/dist/bundles/rxjs.umd.min.js"></script>
+    <script>
+        // Simplified QJax-like implementation for browser demo
+        class SimplifiedQJax {
+            constructor(config = {}) {
+                this.config = {
+                    maxPendingRequests: config.maxPendingRequests || 5,
+                    onStart: config.onStart || null,
+                    onStop: config.onStop || null,
+                    onError: config.onError || null,
+                    onQueueChange: config.onQueueChange || null,
+                    ...config
+                };
+                
+                this.queue = [];
+                this.isProcessing = false;
+                this.queueSubject = new rxjs.Subject();
+                this.queueLengthSubject = new rxjs.BehaviorSubject(0);
+                
+                // Setup queue processor
+                this.queueSubject.pipe(
+                    rxjs.operators.concatMap(item => this.processItem(item))
+                ).subscribe();
+            }
+
+            queueRequest(requestFn) {
+                if (this.config.maxPendingRequests && 
+                    this.queue.length >= this.config.maxPendingRequests) {
+                    return rxjs.throwError(() => new Error(
+                        `Queue limit reached. Maximum ${this.config.maxPendingRequests} pending requests allowed.`
+                    ));
+                }
+
+                const subject = new rxjs.Subject();
+                const item = { requestFn, subject };
+                
+                this.queue.push(item);
+                this.updateQueueLength();
+                this.queueSubject.next(item);
+                
+                return subject.asObservable();
+            }
+
+            processItem(item) {
+                const index = this.queue.indexOf(item);
+                if (index > -1) {
+                    this.queue.splice(index, 1);
+                    this.updateQueueLength();
+                }
+
+                const isFirst = !this.isProcessing;
+                this.isProcessing = true;
+
+                if (isFirst && this.config.onStart) {
+                    this.config.onStart();
+                }
+
+                return rxjs.defer(() => item.requestFn()).pipe(
+                    rxjs.operators.tap({
+                        next: value => item.subject.next(value),
+                        complete: () => item.subject.complete()
+                    }),
+                    rxjs.operators.catchError(error => {
+                        if (this.config.onError) {
+                            this.config.onError(error);
+                        }
+                        item.subject.error(error);
+                        return rxjs.EMPTY;
+                    }),
+                    rxjs.operators.finalize(() => {
+                        if (this.queue.length === 0) {
+                            this.isProcessing = false;
+                            if (this.config.onStop) {
+                                this.config.onStop();
+                            }
+                        }
+                    })
+                );
+            }
+
+            updateQueueLength() {
+                const length = this.queue.length;
+                this.queueLengthSubject.next(length);
+                if (this.config.onQueueChange) {
+                    this.config.onQueueChange(length);
+                }
+            }
+
+            clear() {
+                this.queue.forEach(item => item.subject.complete());
+                this.queue = [];
+                this.updateQueueLength();
+            }
+
+            getQueueLength() {
+                return this.queue.length;
+            }
+
+            canAcceptRequests() {
+                if (!this.config.maxPendingRequests) return true;
+                return this.queue.length < this.config.maxPendingRequests;
+            }
+        }
+
+        // Demo Application
+        const maxPending = 5;
+        let responseCount = 0;
+        const mockResponses = [
+            'Waffles aren\'t pancakes!',
+            'Beep Boop',
+            'Why can\'t monkeys fly?',
+            'There is no spoon!',
+            'The cake is a lie!',
+            'Spider monkey madness.',
+            'Hash browns are evil!',
+            'All your base are belong to us',
+            'Do a barrel roll!',
+            'Would you kindly?'
+        ];
+
+        const qjax = new SimplifiedQJax({
+            maxPendingRequests: maxPending,
+            onStart: () => {
+                document.getElementById('status').textContent = 'Processing...';
+                document.getElementById('status').className = 'value processing';
+            },
+            onStop: () => {
+                document.getElementById('status').textContent = 'Idle';
+                document.getElementById('status').className = 'value';
+            },
+            onQueueChange: (length) => {
+                const percentage = (length / maxPending) * 100;
+                const meter = document.getElementById('queueMeter');
+                const meterText = document.getElementById('meterText');
+                const queueLengthEl = document.getElementById('queueLength');
+                const canAcceptEl = document.getElementById('canAccept');
+                const helpText = document.getElementById('helpText');
+                const btnSingle = document.getElementById('btnSingle');
+                const btnMultiple = document.getElementById('btnMultiple');
+                
+                meter.style.width = percentage + '%';
+                meterText.textContent = length > 0 ? `${length}/${maxPending}` : '';
+                queueLengthEl.textContent = `${length} / ${maxPending}`;
+                
+                // Calculate canAccept based on length and maxPending
+                const canAccept = length < maxPending;
+                canAcceptEl.textContent = canAccept ? 'Yes ✓' : 'No (Queue Full)';
+                canAcceptEl.className = canAccept ? 'value yes' : 'value no';
+                
+                btnSingle.disabled = !canAccept;
+                btnMultiple.disabled = !canAccept;
+                helpText.style.display = canAccept ? 'none' : 'block';
+            },
+            onError: (error) => {
+                console.error('QJax Error:', error);
+            }
+        });
+
+        function makeRequest() {
+            // Try to queue the request first, only increment counter if successful
+            qjax.queueRequest(() => 
+                new rxjs.Observable(observer => {
+                    setTimeout(() => {
+                        const response = mockResponses[Math.floor(Math.random() * mockResponses.length)];
+                        observer.next({ id: responseCount + 1, message: response });
+                        observer.complete();
+                    }, 750);
+                })
+            ).subscribe({
+                next: (data) => {
+                    // Only increment counter when request is successfully processed
+                    responseCount++;
+                    
+                    const responsesEl = document.getElementById('responses');
+                    const emptyState = responsesEl.querySelector('.empty-state');
+                    if (emptyState) {
+                        emptyState.remove();
+                    }
+                    
+                    const div = document.createElement('div');
+                    div.className = 'response-item';
+                    div.innerHTML = `
+                        <span class="response-number">${data.id}</span>
+                        <span>Request ${data.id}: ${data.message}</span>
+                    `;
+                    responsesEl.appendChild(div);
+                    responsesEl.scrollTop = responsesEl.scrollHeight;
+                },
+                error: (error) => {
+                    // Silently ignore queue limit errors - UI already shows queue status
+                    console.log('Request rejected:', error.message);
+                }
+            });
+        }
+
+        function makeMultipleRequests() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => makeRequest(), i * 50);
+            }
+        }
+
+        function clearQueue() {
+            qjax.clear();
+            const responsesEl = document.getElementById('responses');
+            responsesEl.innerHTML = '<div class="empty-state">Click "Make Single Request" to see ordered responses</div>';
+            responseCount = 0;
+        }
+
+        // Event listeners
+        document.getElementById('btnSingle').addEventListener('click', makeRequest);
+        document.getElementById('btnMultiple').addEventListener('click', makeMultipleRequests);
+        document.getElementById('btnClear').addEventListener('click', clearQueue);
+    </script>
+</body>
+</html>
